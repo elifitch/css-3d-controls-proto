@@ -1,5 +1,189 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+
+html {
+  --lightingControlsRingStroke: 10px;
+  --lightingControlsSideDimension: 10px;
+  --lightingControlsRingTopSurfaceTransform: translate3d(calc(-1 * var(--lightingControlsRingStroke)), calc(-1 * var(--lightingControlsRingStroke)), calc(0.5 * var(--lightingControlsSideDimension)));
+  --lightingControlsRingBottomSurfaceTransform: translate3d(calc(-1 * var(--lightingControlsRingStroke)), calc(-1 * var(--lightingControlsRingStroke)), calc(-0.5 * var(--lightingControlsSideDimension)));
+  
+  --lightgreen: lightgreen;
+  --darkgreen: #64e764;
+  --red: red;
+  --darkred: #cc0000;
+}
+
+/* body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+.widget-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  height: 320px;
+  width: 320px;
+  border: 1px solid black;
+  perspective: 500px;
+  position: relative;
+  filter: blur(0px);
+}
+.disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 100%;
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+.rot {
+  height: 80%;
+  width: 80%;
+  transform: translate3d(-50%, -50%, 0) rotateX(70deg) rotateZ(0deg);
+/*   // animation: rot 12s infinite linear; */
+}
+.rot:before {
+  content: '';
+  height: 100%;
+  width: 100%;
+  border: var(--lightingControlsRingStroke) solid var(--darkred);
+  position: absolute;
+  left: 0;
+  border-radius: 100%;
+  transform: var(--lightingControlsRingTopSurfaceTransform);
+}
+.rot:after {
+  content: '';
+  height: 100%;
+  width: 100%;
+  border: var(--lightingControlsRingStroke) solid var(--darkred);
+  position: absolute;
+  left: 0;
+  border-radius: 100%;
+  transform: var(--lightingControlsRingBottomSurfaceTransform);
+}
+.pole {
+  height: 100%;
+  width: 100%;
+/*   // border: 10px solid lightgreen; */
+  transform: translate3d(-50%, -50%, 0) rotateX(90deg);
+}
+.pole:before {
+  content: '';
+  height: 100%;
+  width: 100%;
+  border: var(--lightingControlsRingStroke) solid var(--darkgreen);
+  position: absolute;
+  left: 0;
+  border-radius: 100%;
+  transform: var(--lightingControlsRingTopSurfaceTransform);
+}
+.pole:after {
+  content: '';
+  height: 100%;
+  width: 100%;
+  border: var(--lightingControlsRingStroke) solid var(--darkgreen);
+  position: absolute;
+  left: 0;
+  border-radius: 100%;
+  transform: var(--lightingControlsRingBottomSurfaceTransform);
+}
+
+
+.side {
+  position: absolute;
+  background: blue;
+  height: calc(2 * var(--lightingControlsSideDimension));
+  width: var(--lightingControlsSideDimension);
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.side-container {
+  position: absolute;
+  height: 100%;
+  left: calc(50% - calc(0.5 * var(--lightingControlsSideDimension)));
+  top: 0;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  transform: translateZ(10px) rotateX(-90deg);
+  width: 100%;
+}
+.rot-side-container .side {
+  background: red;
+}
+.pole-side-container .side {
+  background: lightgreen;
+}
+
+@keyframes rot {
+  from {
+    transform: translate3d(-50%, -50%, 0) rotateX(70deg) rotateZ(0deg);
+  }
+  to {
+    transform: translate3d(-50%, -50%, 0) rotateX(70deg) rotateZ(360deg);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+.cube {
+	bottom: 0;
+	height: 50px;
+	left: 0;
+	margin: auto;
+	position: absolute;
+	transform-style: preserve-3d;
+	right: 0;
+	top: 0;
+	width: 50px;
+}
+
+.cube .face {
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+.cube .front {
+	background: #333;
+	transform: translateZ(25px);
+}
+
+.cube .back {
+	background: #444;
+	transform: translateZ(-25px);
+}
+
+.cube .left {
+	background: #555;
+	transform: translateX(-25px) rotateY(90deg);
+}
+
+.cube .right {
+	background: #666;
+	transform: translateX(25px) rotateY(90deg);
+}
+
+.cube .top {
+	background: #777;
+	transform: translateY(-25px) rotateX(90deg);
+}
+
+.cube .bottom {
+	background: #888;
+	transform: translateY(25px) rotateX(90deg);
 }

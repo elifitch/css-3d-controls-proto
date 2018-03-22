@@ -1,0 +1,129 @@
+.pyramid {
+  --unit: 1vmin;
+  --side: calc(var(--unit) * 30);
+  --rotateY: 0deg;
+  --rotateX: 0deg;
+  --fold: 0deg;
+  
+  --shape-square: polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%);
+/*   --shape-triangle: polygon(0% 100%, 50% 0%, 50% 0%, 100% 100%); */
+  --shape-triangle: polygon(0% 100%, 25% 0%, 75% 0%, 100% 100%);
+  --fold: -105deg;
+  --opacity: 1;
+  
+  width: var(--side);
+  height: var(--side);
+  
+  transform:
+    rotateX(var(--rotateX))
+    rotateY(var(--rotateY))
+    translateZ(var(--z, 0))
+    scale3d(0.7, 0.7, 0.5)
+    scale3d(0.5, 0.5, 0.5);
+  transform-style: preserve-3d;
+  will-change: transform;
+  
+  transition: transform 900ms ease-in-out;
+  
+  opacity: var(--opacity, 0);
+}
+.pyramid div {
+  width: var(--side);
+  height: var(--side);
+  position: absolute;
+  
+  transition: 
+    transform 900ms ease-out,
+    opacity var(--opacity-delay, 0ms) ease-in-out,
+    -webkit-clip-path 900ms ease-out, /* for Safari 11 and iOS 11 */
+    clip-path 900ms ease-out;
+  transition-delay: 0ms, var(--opacity-delay, 0ms), 0ms;
+  opacity: var(--opacity, 0);
+}
+.pyramid .base {
+  background: hsla(338, 80%, 50%, 1);
+}
+.pyramid div:not(.base) {
+  /* Safari 11 (iOS 11) still requires prefix for clip path */
+  -webkit-clip-path: var(--clipped, var(--shape-triangle));
+  clip-path: var(--clipped, var(--shape-triangle));
+  background: hsla(var(--hue, 183), 90%, 56%, .68);
+/*
+  background: 
+    repeating-linear-gradient(20deg, hsla(var(--hue, 183), 90%, 96%, .68) 0px, hsla(var(--hue, 183), 90%, 96%, .68) 20px, hsla(var(--hue, 183), 90%, 50%, .68) 20px, hsla(var(--hue, 183), 90%, 50%, .68) 28px),
+    repeating-linear-gradient(110deg, hsla(var(--hue, 183), 90%, 96%, .68) 0px, hsla(var(--hue, 183), 90%, 96%, .68) 20px, hsla(var(--hue, 183), 90%, 50%, .68) 20px, hsla(var(--hue, 183), 90%, 50%, .68) 28px); 
+/**/
+  transform-origin: 0% 100%;
+  
+  transform:
+    rotateZ(var(--rotateZ, 0deg))
+    translate(var(--x, 0), var(--y, calc(var(--side) * -1)))
+    rotateX(var(--fold, 0deg));
+}
+.pyramid div:nth-child(2) {
+  --hue: 188;
+  --rotateZ: 90deg;
+  --x: calc(var(--side) * -1);
+}
+.pyramid div:nth-child(3) {
+  --hue: 193;
+  --rotateZ: 180deg;
+  --x: calc(var(--side) * -1);
+  --y: 0;
+}
+.pyramid div:nth-child(4) {
+  --hue: 198;
+  --rotateZ: 270deg;
+  --y: 0;
+}
+
+/* rotate them as though they were in a ... display case */
+.display-case {
+  transform-style: preserve-3d;
+  transform: translateY(5vmin) rotateY(0deg);
+/*   animation: model-it 2900ms 1600ms infinite linear; */
+  animation: model-it 2900ms 0ms infinite linear;
+  animation-play-state: var(--rotation-state, running);
+}
+@keyframes model-it {
+  100% {
+    transform: translateY(5vmin) rotateY(360deg);
+  }
+}
+
+
+
+
+
+/* stack the pyramids and fade them in */
+.pyramid:nth-of-type(1) {
+  --z: calc(var(--unit) * -2.67);
+  --opacity: 1;
+}
+.pyramid:nth-of-type(2) {
+  --rotateZ: 30deg;
+  --opacity-delay: 900ms;
+}
+.pyramid:nth-of-type(3) {
+  --rotateZ: 60deg;
+  --z: calc(var(--unit) * 2.67);
+  --opacity-delay: 1800ms;
+}
+
+/* body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  perspective: 800px;
+  --inner: hsl(328, 70%, 60%);
+  --middle: hsl(328, 70%, 44%);
+  --outer: hsl(328, 70%, 26%);
+  background: radial-gradient(circle, var(--inner), var(--middle), transparent);
+  background-color: var(--outer);
+  position: relative;
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+} */
