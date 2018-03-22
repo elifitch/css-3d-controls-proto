@@ -3,12 +3,13 @@ import './frustum.css';
 
 const Frustum = function Frustum() {
   return (
-    <div className="pyramid">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+    <div className="frustum">
+      <div className="frustum__side"></div>
+      <div className="frustum__side"></div>
+      <div className="frustum__side"></div>
+      <div className="frustum__side"></div>
       <div className="base"></div>
+      <div className="frustum__top"></div>
     </div>
   )
 }

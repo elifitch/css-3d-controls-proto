@@ -1,5 +1,5 @@
-.pyramid {
-  --unit: 1vmin;
+.frustum {
+  --unit: 6px;
   --side: calc(var(--unit) * 30);
   --rotateY: 0deg;
   --rotateX: 0deg;
@@ -10,14 +10,20 @@
   --shape-triangle: polygon(0% 100%, 25% 0%, 75% 0%, 100% 100%);
   --fold: -105deg;
   --opacity: 1;
+
+  --frustumXPosition: -84px;
+  --frustumYPosition: 48px;
+  --frustumZPosition: 105px;
   
   width: var(--side);
   height: var(--side);
-  
+  /* translate3d(var(--frustumXPosition), var(--frustumYPosition), var(--frustumZPosition)) */
   transform:
     rotateX(var(--rotateX))
     rotateY(var(--rotateY))
-    translateZ(var(--z, 0))
+    translateX(var(--frustumXPosition))
+    translateY(var(--frustumYPosition))
+    translateZ(var(--frustumZPosition))
     scale3d(0.7, 0.7, 0.5)
     scale3d(0.5, 0.5, 0.5);
   transform-style: preserve-3d;
@@ -27,7 +33,7 @@
   
   opacity: var(--opacity, 0);
 }
-.pyramid div {
+.frustum div {
   width: var(--side);
   height: var(--side);
   position: absolute;
@@ -40,10 +46,15 @@
   transition-delay: 0ms, var(--opacity-delay, 0ms), 0ms;
   opacity: var(--opacity, 0);
 }
-.pyramid .base {
+.frustum .base {
   background: hsla(338, 80%, 50%, 1);
 }
-.pyramid div:not(.base) {
+.frustum .frustum__top {
+  background: red;
+  /* transform: translate3d(0px, 0px, 215px) scale(0.5); */
+  transform: translate3d(0px, 0px, 173px) scale(0.5);
+}
+.frustum .frustum__side {
   /* Safari 11 (iOS 11) still requires prefix for clip path */
   -webkit-clip-path: var(--clipped, var(--shape-triangle));
   clip-path: var(--clipped, var(--shape-triangle));
@@ -60,70 +71,20 @@
     translate(var(--x, 0), var(--y, calc(var(--side) * -1)))
     rotateX(var(--fold, 0deg));
 }
-.pyramid div:nth-child(2) {
+.frustum .frustum__side:nth-child(2) {
   --hue: 188;
   --rotateZ: 90deg;
   --x: calc(var(--side) * -1);
 }
-.pyramid div:nth-child(3) {
+.frustum .frustum__side:nth-child(3) {
   --hue: 193;
   --rotateZ: 180deg;
   --x: calc(var(--side) * -1);
   --y: 0;
 }
-.pyramid div:nth-child(4) {
+.frustum .frustum__side:nth-child(4) {
   --hue: 198;
   --rotateZ: 270deg;
   --y: 0;
 }
 
-/* rotate them as though they were in a ... display case */
-.display-case {
-  transform-style: preserve-3d;
-  transform: translateY(5vmin) rotateY(0deg);
-/*   animation: model-it 2900ms 1600ms infinite linear; */
-  animation: model-it 2900ms 0ms infinite linear;
-  animation-play-state: var(--rotation-state, running);
-}
-@keyframes model-it {
-  100% {
-    transform: translateY(5vmin) rotateY(360deg);
-  }
-}
-
-
-
-
-
-/* stack the pyramids and fade them in */
-.pyramid:nth-of-type(1) {
-  --z: calc(var(--unit) * -2.67);
-  --opacity: 1;
-}
-.pyramid:nth-of-type(2) {
-  --rotateZ: 30deg;
-  --opacity-delay: 900ms;
-}
-.pyramid:nth-of-type(3) {
-  --rotateZ: 60deg;
-  --z: calc(var(--unit) * 2.67);
-  --opacity-delay: 1800ms;
-}
-
-/* body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  overflow: hidden;
-  perspective: 800px;
-  --inner: hsl(328, 70%, 60%);
-  --middle: hsl(328, 70%, 44%);
-  --outer: hsl(328, 70%, 26%);
-  background: radial-gradient(circle, var(--inner), var(--middle), transparent);
-  background-color: var(--outer);
-  position: relative;
-}
-*, *::before, *::after {
-  box-sizing: border-box;
-} */
