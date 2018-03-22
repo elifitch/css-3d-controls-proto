@@ -58,10 +58,13 @@ class LightingControls extends React.Component {
       x: e.clientX,
       y: e.clientY
     };
-    this.widgetContainer.addEventListener('mousemove', this.onRotationMouseMove);
+    this.widgetContainer.addEventListener('mousemove', this.onRotationMouseMove, true);
+    document.addEventListener('mouseup', this.cancelDragControls);
   }
-  onRotationMouseUp = () => {
-    this.widgetContainer.removeEventListener('mousemove', this.onRotationMouseMove);
+  cancelDragControls = () => {
+    this.widgetContainer.removeEventListener('mousemove', this.onRotationMouseMove, true);
+    this.widgetContainer.removeEventListener('mousemove', this.onPolarMouseMove, true);
+    document.removeEventListener('mouseup', this.cancelDragControls);
   }
   onRotationMouseMove = (e) => {
     const rotStyle = getComputedStyle(this.rotationContainer)['transform'];
@@ -71,18 +74,37 @@ class LightingControls extends React.Component {
     const formattedNewRotTransform = `matrix3d(${newRotTransform.join(', ')})`;
     this.rotationContainer.style.transform = formattedNewRotTransform;
   }
+  onPolarMouseDown = (e) => {
+    this.initialCoords = {
+      x: e.clientX,
+      y: e.clientY
+    };
+    this.widgetContainer.addEventListener('mousemove', this.onPolarMouseMove, false);
+  }
+  onPolarMouseMove = (e) => {
+    const polarStyle = getComputedStyle(this.polarContainer)['transform'];
+    const polarTransform = Rematrix.parse(polarStyle);
+    const newPolar = Rematrix.rotateZ(-e.movementY * 1);
+    const newRotTransform = [polarTransform, newPolar].reduce(Rematrix.multiply);
+    const formattedNewPolarTransform = `matrix3d(${newRotTransform.join(', ')})`;
+    this.polarContainer.style.transform = formattedNewPolarTransform;
+  }
   render() {
     return (
-      <div className="widget-wrapper"
-        ref={div => this.widgetContainer = div}
-      >
-        <div className="container">
+      <div className="widget-wrapper">
+        <div className="container"
+          ref={div => this.widgetContainer = div}
+        >
           <div className="rot disc debug"
             onMouseDown={this.onRotationMouseDown}
             onMouseUp={this.onRotationMouseUp}
             ref={div => this.rotationContainer = div}
           >
-            <div className="pole disc debug">
+            <div className="pole disc debug"
+              onMouseDown={this.onPolarMouseDown}
+              onMouseUp={this.onPolarMouseUp}
+              ref={div => this.polarContainer = div}
+            >
               <div className="pole-side-container side-container">
                 { this.ringSides.polar.outer }
                 { this.ringSides.polar.inner }
