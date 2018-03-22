@@ -11,12 +11,6 @@ html {
   --darkred: #cc0000;
 }
 
-/* body {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-} */
 .widget-wrapper {
   height: 100vh;
   display: flex;
@@ -29,7 +23,6 @@ html {
   border: 1px solid black;
   perspective: 500px;
   position: relative;
-  filter: blur(0px);
 }
 .disc {
   position: absolute;
@@ -112,6 +105,7 @@ html {
   transform-style: preserve-3d;
   transform: translateZ(10px) rotateX(-90deg);
   width: 100%;
+  pointer-events: none;
 }
 .rot-side-container .side {
   background: red;
@@ -127,63 +121,4 @@ html {
   to {
     transform: translate3d(-50%, -50%, 0) rotateX(70deg) rotateZ(360deg);
   }
-}
-
-
-
-
-
-
-
-
-
-
-.cube {
-	bottom: 0;
-	height: 50px;
-	left: 0;
-	margin: auto;
-	position: absolute;
-	transform-style: preserve-3d;
-	right: 0;
-	top: 0;
-	width: 50px;
-}
-
-.cube .face {
-	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 100%;
-}
-
-.cube .front {
-	background: #333;
-	transform: translateZ(25px);
-}
-
-.cube .back {
-	background: #444;
-	transform: translateZ(-25px);
-}
-
-.cube .left {
-	background: #555;
-	transform: translateX(-25px) rotateY(90deg);
-}
-
-.cube .right {
-	background: #666;
-	transform: translateX(25px) rotateY(90deg);
-}
-
-.cube .top {
-	background: #777;
-	transform: translateY(-25px) rotateX(90deg);
-}
-
-.cube .bottom {
-	background: #888;
-	transform: translateY(25px) rotateX(90deg);
 }

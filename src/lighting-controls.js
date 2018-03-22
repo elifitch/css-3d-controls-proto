@@ -54,16 +54,17 @@ class LightingControls extends React.Component {
     });
   }
   onRotationMouseDown = (e) => {
+    console.log('rotmd')
     this.initialCoords = {
       x: e.clientX,
       y: e.clientY
     };
-    this.widgetContainer.addEventListener('mousemove', this.onRotationMouseMove, true);
+    this.widgetContainer.addEventListener('mousemove', this.onRotationMouseMove);
     document.addEventListener('mouseup', this.cancelDragControls);
   }
   cancelDragControls = () => {
-    this.widgetContainer.removeEventListener('mousemove', this.onRotationMouseMove, true);
-    this.widgetContainer.removeEventListener('mousemove', this.onPolarMouseMove, true);
+    this.widgetContainer.removeEventListener('mousemove', this.onRotationMouseMove);
+    this.widgetContainer.removeEventListener('mousemove', this.onPolarMouseMove);
     document.removeEventListener('mouseup', this.cancelDragControls);
   }
   onRotationMouseMove = (e) => {
@@ -79,7 +80,9 @@ class LightingControls extends React.Component {
       x: e.clientX,
       y: e.clientY
     };
-    this.widgetContainer.addEventListener('mousemove', this.onPolarMouseMove, false);
+    console.log('polarmd')
+    this.widgetContainer.addEventListener('mousemove', this.onPolarMouseMove);
+    document.addEventListener('mouseup', this.cancelDragControls);
   }
   onPolarMouseMove = (e) => {
     const polarStyle = getComputedStyle(this.polarContainer)['transform'];
