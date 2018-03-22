@@ -1,6 +1,6 @@
 import React from 'react'
 import Frustum from './frustum';
-import Rematrix from 'rematrix';
+import * as Rematrix from 'rematrix'
 
 const NUM_SIDE = 45;
 const RING_STROKE = 10;
@@ -53,27 +53,45 @@ class LightingControls extends React.Component {
       return <div className="side" style={{ transform }}/>
     });
   }
+  onRotationMouseDown = (e) => {
+    this.initialCoords = {
+      x: e.clientX,
+      y: e.clientY
+    };
+    this.widgetContainer.addEventListener('mousemove', this.onRotationMouseMove);
+  }
+  onRotationMouseUp = () => {
+    this.widgetContainer.removeEventListener('mousemove', this.onRotationMouseMove);
+  }
+  onRotationMouseMove = (e) => {
+    const rotStyle = getComputedStyle(this.rotationContainer)['transform'];
+    const rotTransform = Rematrix.parse(rotStyle);
+    const newRot = Rematrix.rotateZ(-e.movementX * 1);
+    const newRotTransform = [rotTransform, newRot].reduce(Rematrix.multiply);
+    const formattedNewRotTransform = `matrix3d(${newRotTransform.join(', ')})`;
+    this.rotationContainer.style.transform = formattedNewRotTransform;
+  }
   render() {
     return (
-      <div className="widget-wrapper">
+      <div className="widget-wrapper"
+        ref={div => this.widgetContainer = div}
+      >
         <div className="container">
-          <div className="rot disc debug">
+          <div className="rot disc debug"
+            onMouseDown={this.onRotationMouseDown}
+            onMouseUp={this.onRotationMouseUp}
+            ref={div => this.rotationContainer = div}
+          >
             <div className="pole disc debug">
               <div className="pole-side-container side-container">
-                {/* <div className="cube">
-                  <div className="face front"></div>
-                  <div className="face back"></div>
-                  <div className="face left"></div>
-                  <div className="face right"></div>
-                  <div className="face top"></div>
-                  <div className="face bottom"></div>
-                </div> */}
+                { this.ringSides.polar.outer }
+                { this.ringSides.polar.inner }
                 <Frustum />
               </div>
             </div>
             <div className="rot-side-container side-container">
-              {this.ringSides.rotational.outer}
-              {this.ringSides.rotational.inner}
+              { this.ringSides.rotational.outer }
+              { this.ringSides.rotational.inner }
             </div>
           </div>
         </div>
