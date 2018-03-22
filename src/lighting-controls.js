@@ -53,21 +53,34 @@ class LightingControls extends React.Component {
       return <div className="side" style={{ transform }}/>
     });
   }
-  onRotationMouseDown = (e) => {
-    console.log('rotmd')
+  onControlsMouseDown = (e) => {
     this.initialCoords = {
       x: e.clientX,
       y: e.clientY
     };
-    this.widgetContainer.addEventListener('mousemove', this.onRotationMouseMove);
+    this.widgetContainer.addEventListener('mousemove', this.thresholdBoundDrag);
     document.addEventListener('mouseup', this.cancelDragControls);
   }
   cancelDragControls = () => {
-    this.widgetContainer.removeEventListener('mousemove', this.onRotationMouseMove);
-    this.widgetContainer.removeEventListener('mousemove', this.onPolarMouseMove);
+    this.widgetContainer.removeEventListener('mousemove', this.thresholdBoundDrag);
+    this.widgetContainer.removeEventListener('mousemove', this.onHorizontalDrag);
+    this.widgetContainer.removeEventListener('mousemove', this.onVerticalDrag);
     document.removeEventListener('mouseup', this.cancelDragControls);
   }
-  onRotationMouseMove = (e) => {
+  thresholdBoundDrag = (e) => {
+    const threshold = 5;
+    const dx = this.initialCoords.x - e.clientX;
+    const dy = this.initialCoords.y - e.clientY;
+    if (dx > threshold || dx < -threshold) {
+      this.widgetContainer.removeEventListener('mousemove', this.thresholdBoundDrag);
+      this.widgetContainer.addEventListener('mousemove', this.onHorizontalDrag);
+    }
+    if (dy > threshold || dy < -threshold) {
+      this.widgetContainer.removeEventListener('mousemove', this.thresholdBoundDrag);
+      this.widgetContainer.addEventListener('mousemove', this.onVerticalDrag);
+    }
+  }
+  onHorizontalDrag = (e) => {
     const rotStyle = getComputedStyle(this.rotationContainer)['transform'];
     const rotTransform = Rematrix.parse(rotStyle);
     const newRot = Rematrix.rotateZ(-e.movementX * 1);
@@ -75,16 +88,7 @@ class LightingControls extends React.Component {
     const formattedNewRotTransform = `matrix3d(${newRotTransform.join(', ')})`;
     this.rotationContainer.style.transform = formattedNewRotTransform;
   }
-  onPolarMouseDown = (e) => {
-    this.initialCoords = {
-      x: e.clientX,
-      y: e.clientY
-    };
-    console.log('polarmd')
-    this.widgetContainer.addEventListener('mousemove', this.onPolarMouseMove);
-    document.addEventListener('mouseup', this.cancelDragControls);
-  }
-  onPolarMouseMove = (e) => {
+  onVerticalDrag = (e) => {
     const polarStyle = getComputedStyle(this.polarContainer)['transform'];
     const polarTransform = Rematrix.parse(polarStyle);
     const newPolar = Rematrix.rotateZ(-e.movementY * 1);
@@ -97,15 +101,12 @@ class LightingControls extends React.Component {
       <div className="widget-wrapper">
         <div className="container"
           ref={div => this.widgetContainer = div}
+          onMouseDown={this.onControlsMouseDown}
         >
           <div className="rot disc debug"
-            onMouseDown={this.onRotationMouseDown}
-            onMouseUp={this.onRotationMouseUp}
             ref={div => this.rotationContainer = div}
           >
             <div className="pole disc debug"
-              onMouseDown={this.onPolarMouseDown}
-              onMouseUp={this.onPolarMouseUp}
               ref={div => this.polarContainer = div}
             >
               <div className="pole-side-container side-container">
