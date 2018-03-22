@@ -93,8 +93,10 @@ class LightingControls extends React.Component {
     const polarTransform = Rematrix.parse(polarStyle);
     const newPolar = Rematrix.rotateZ(-e.movementY * 1);
     const newRotTransform = [polarTransform, newPolar].reduce(Rematrix.multiply);
-    const formattedNewPolarTransform = `matrix3d(${newRotTransform.join(', ')})`;
-    this.polarContainer.style.transform = formattedNewPolarTransform;
+    if (newRotTransform[0] > 0) {
+      const formattedNewPolarTransform = `matrix3d(${newRotTransform.join(', ')})`;
+      this.polarContainer.style.transform = formattedNewPolarTransform;
+    }
   }
   render() {
     return (
