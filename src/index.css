@@ -16,6 +16,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 .container {
   height: 320px;
@@ -23,6 +24,7 @@ html {
   border: 1px solid black;
   perspective: 500px;
   position: relative;
+  pointer-events: auto;
 }
 .disc {
   position: absolute;

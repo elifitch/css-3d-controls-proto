@@ -23,7 +23,14 @@ class LightingControls extends React.Component {
     }
   }
   componentDidMount() {
-    console.log(this.rotSideContainer)
+    // const rotStyle = getComputedStyle(this.rotationContainer)['transform'];
+    // const rotTransform = Rematrix.parse(rotStyle);
+    // console.log(rotTransform);
+    // const newRot = Rematrix.rotateZ(50);
+    // const newRotTransform = [rotTransform, newRot].reduce(Rematrix.multiply);
+    // console.log(newRotTransform);
+    // const formattedNewRotTransform = `matrix3d(${newRotTransform.join(', ')})`;
+    // this.rotationContainer.style.transform = formattedNewRotTransform;
   }
   getRingProps(radius, numSegments) {
     const angle = 360 / numSegments;
@@ -47,10 +54,10 @@ class LightingControls extends React.Component {
     });
   }
   makeRing({ target, ringProps, offset = 0, flip = false }) {
-    return ringProps.map((segmentData) => {
+    return ringProps.map((segmentData, i) => {
       const flipRotation = flip ? 'rotateX(180deg)' : '';
       const transform = `rotateY(${segmentData.rotateY}deg) rotateZ(90deg) rotateX(90deg) translate3d(${segmentData.translateX}px, ${segmentData.translateY}px, ${segmentData.translateZ + offset}px) ${flipRotation}`;
-      return <div className="side" style={{ transform }}/>
+      return <div className="side" key={i} style={{ transform }}/>
     });
   }
   onControlsMouseDown = (e) => {
@@ -87,6 +94,9 @@ class LightingControls extends React.Component {
     const newRotTransform = [rotTransform, newRot].reduce(Rematrix.multiply);
     const formattedNewRotTransform = `matrix3d(${newRotTransform.join(', ')})`;
     this.rotationContainer.style.transform = formattedNewRotTransform;
+    this.props.onChange({
+      rot: newRotTransform[0]
+    })
   }
   onVerticalDrag = (e) => {
     const polarStyle = getComputedStyle(this.polarContainer)['transform'];
@@ -96,6 +106,9 @@ class LightingControls extends React.Component {
     if (newRotTransform[0] > 0) {
       const formattedNewPolarTransform = `matrix3d(${newRotTransform.join(', ')})`;
       this.polarContainer.style.transform = formattedNewPolarTransform;
+      this.props.onChange({
+        polar: newRotTransform[0]
+      })
     }
   }
   render() {

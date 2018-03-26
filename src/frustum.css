@@ -51,7 +51,7 @@
   background: hsla(338, 80%, 50%, 1);
 }
 .frustum .frustum__top {
-  background: red;
+  background: hsla(338, 80%, 50%, 1);
   /* transform: translate3d(0px, 0px, 215px) scale(0.5); */
   transform: translate3d(0px, 0px, 173px) scale(0.5);
 }
