@@ -22,16 +22,6 @@ class LightingControls extends React.Component {
       }
     }
   }
-  componentDidMount() {
-    // const rotStyle = getComputedStyle(this.rotationContainer)['transform'];
-    // const rotTransform = Rematrix.parse(rotStyle);
-    // console.log(rotTransform);
-    // const newRot = Rematrix.rotateZ(50);
-    // const newRotTransform = [rotTransform, newRot].reduce(Rematrix.multiply);
-    // console.log(newRotTransform);
-    // const formattedNewRotTransform = `matrix3d(${newRotTransform.join(', ')})`;
-    // this.rotationContainer.style.transform = formattedNewRotTransform;
-  }
   getRingProps(radius, numSegments) {
     const angle = 360 / numSegments;
     let rot = -90;
@@ -82,10 +72,10 @@ class LightingControls extends React.Component {
       this.widgetContainer.removeEventListener('mousemove', this.thresholdBoundDrag);
       this.widgetContainer.addEventListener('mousemove', this.onHorizontalDrag);
     }
-    if (dy > threshold || dy < -threshold) {
-      this.widgetContainer.removeEventListener('mousemove', this.thresholdBoundDrag);
-      this.widgetContainer.addEventListener('mousemove', this.onVerticalDrag);
-    }
+    // if (dy > threshold || dy < -threshold) {
+    //   this.widgetContainer.removeEventListener('mousemove', this.thresholdBoundDrag);
+    //   this.widgetContainer.addEventListener('mousemove', this.onVerticalDrag);
+    // }
   }
   onHorizontalDrag = (e) => {
     const rotStyle = getComputedStyle(this.rotationContainer)['transform'];
@@ -106,9 +96,52 @@ class LightingControls extends React.Component {
     if (newRotTransform[0] > 0) {
       const formattedNewPolarTransform = `matrix3d(${newRotTransform.join(', ')})`;
       this.polarContainer.style.transform = formattedNewPolarTransform;
+      const negativeCorrection = newRotTransform[2] > 0 ? 1 : -1;
       this.props.onChange({
-        polar: newRotTransform[0]
+        polar: newRotTransform[0] * negativeCorrection
       })
+    }
+  }
+  // onHorizontalDrag = (e) => {
+  //   const rotStyle = getComputedStyle(this.rotationContainer)['transform'];
+  //   const rotTransform = Rematrix.parse(rotStyle);
+  //   const newRot = Rematrix.rotateZ(-e.movementX);
+  //   const newRotTransform = [rotTransform, newRot].reduce(Rematrix.multiply);
+  //   this.props.onChange({
+  //     rot: newRotTransform[0]
+  //   })
+  // }
+  // onVerticalDrag = (e) => {
+  //   const polarStyle = getComputedStyle(this.polarContainer)['transform'];
+  //   const polarTransform = Rematrix.parse(polarStyle);
+  //   const newPolar = Rematrix.rotateZ(-e.movementY);
+  //   const newPolarTransform = [polarTransform, newPolar].reduce(Rematrix.multiply);
+  //   if (newPolarTransform[0] > 0) {
+  //     this.props.onChange({
+  //       polar: newPolarTransform[0]
+  //     })
+  //   }
+  // }
+  updateTransorm = (rotationAngle, polarAngle) => {
+    const rotStyle = getComputedStyle(this.rotationContainer)['transform'];
+    const polarStyle = getComputedStyle(this.polarContainer)['transform'];
+    const rotTransform = Rematrix.parse(rotStyle);
+    const polarTransform = Rematrix.parse(polarStyle);
+    const newRot = Rematrix.rotateZ(rotationAngle);
+    const newPolar = Rematrix.rotateZ(polarAngle);
+    const newRotTransform = [rotTransform, newRot].reduce(Rematrix.multiply);
+    const newPolarTransform = [polarTransform, newPolar].reduce(Rematrix.multiply);
+    const formattedNewRotTransform = `matrix3d(${newRotTransform.join(', ')})`;
+    const formattedNewPolarTransform = `matrix3d(${newRotTransform.join(', ')})`;
+    this.rotationContainer.style.transform = formattedNewRotTransform;
+    this.polarContainer.style.transform = formattedNewPolarTransform;
+  }
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.props.polarAngle !== nextProps.polarAngle ||
+      this.props.rotationAngle !== nextProps.rotationAngle
+    ) {
+      this.updateTransorm(nextProps.rotationAngle, nextProps.polarAngle);
     }
   }
   render() {

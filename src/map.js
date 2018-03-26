@@ -9,7 +9,7 @@ class Map extends React.Component {
     this.state = {
       accessToken: process.env.REACT_APP_MAPBOX_GL_ACCESS_TOKEN,
       map: null,
-      polarLighing: 30,
+      polarLighing: 0,
       rotationLighting: 0
     };
   }
@@ -18,16 +18,13 @@ class Map extends React.Component {
     const map = new MapboxGl.Map({
       container: 'map-container', // container id
       style: 'mapbox://styles/elifitch/cjf4asuv90w6e2rqv887nuyli?fresh=true', //hosted style id
-      // center: mapCenter, // starting position
-      // zoom: localStorage.getItem(MAP_ZOOM) || 2.6, // starting zoom,
-      // pitch: localStorage.getItem(MAP_PITCH) || 50
     });
     this.setState({ map });
   }
   onLightingUpdate = ({polar, rot}) => {
     const normalize = val => (val + 1) / 2;
     if (rot) {
-      this.setState({ rotationLighting: normalize(rot) * 360 })
+      this.setState({ rotationLighting: normalize(rot) })
     }
     if (polar) {
       this.setState({ polarLighing: polar })
@@ -59,6 +56,8 @@ class Map extends React.Component {
         />
         <LightingControls
           onChange={this.onLightingUpdate}
+          rotationAngle={this.state.rotationLighting}
+          polarAngle={this.state.polarLighing}
         />
       </div>      
     )
